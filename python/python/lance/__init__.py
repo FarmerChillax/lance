@@ -110,7 +110,7 @@ __all__ = [
 
 def dataset(
     uri: Optional[Union[str, Path]] = None,
-    version: Optional[int | str] = None,
+    version_or_tag: Optional[int | str] = None,
     asof: Optional[ts_types] = None,
     block_size: Optional[int] = None,
     commit_lock: Optional[CommitLock] = None,
@@ -211,6 +211,12 @@ def dataset(
     # Validate that user provides either uri OR (namespace_client + table_id), not both
     has_uri = uri is not None
     has_namespace = namespace_client is not None or table_id is not None
+    
+    version = None
+    has_tag = isinstance(version_or_tag, str)
+    if not has_tag:
+        version = version_or_tag
+
 
     if has_uri and has_namespace:
         raise ValueError(
